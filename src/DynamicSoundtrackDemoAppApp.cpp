@@ -3,6 +3,7 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <AudioManger.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -18,7 +19,13 @@ DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
 }
 
 bool DynamicSoundtrackDemoAppApp::startup() {
-	//aaa
+	
+	m_AudioManager = DSS::AudioManager::Instance();
+	m_AudioManager->Init(32);
+
+	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
+	m_AudioManager->ToggleChannelPause(0);
+
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
@@ -34,6 +41,9 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 void DynamicSoundtrackDemoAppApp::shutdown() {
 
 	Gizmos::destroy();
+
+	m_AudioManager->Shutdown();
+
 }
 
 void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
