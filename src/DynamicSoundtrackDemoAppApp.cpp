@@ -69,6 +69,11 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	//Update the camera
 	m_Camera->Update(deltaTime);
 
+	ImGui::Begin("Channel Control");
+	if(ImGui::Button("Toggle Pause"))
+		m_AudioManager->ToggleChannelPause(0);
+	ImGui::End();
+
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
