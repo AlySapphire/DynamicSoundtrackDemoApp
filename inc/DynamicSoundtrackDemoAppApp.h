@@ -21,6 +21,8 @@ public:
 
 protected:
 
+	void DrawGrid();
+
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
