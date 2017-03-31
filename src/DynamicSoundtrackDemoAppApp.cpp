@@ -18,7 +18,7 @@ DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
 }
 
 bool DynamicSoundtrackDemoAppApp::startup() {
-	
+	//aaa
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
