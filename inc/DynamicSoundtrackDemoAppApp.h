@@ -7,6 +7,8 @@ namespace DSS {
 	class AudioManager;
 }
 
+class Camera;
+
 class DynamicSoundtrackDemoAppApp : public aie::Application {
 public:
 
@@ -26,6 +28,8 @@ protected:
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
+
+	Camera* m_Camera;
 
 	DSS::AudioManager* m_AudioManager;
 

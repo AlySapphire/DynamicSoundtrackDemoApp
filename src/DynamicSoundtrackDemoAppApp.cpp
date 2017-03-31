@@ -5,27 +5,37 @@
 #include <glm/ext.hpp>
 #include <AudioManager.hpp>
 #include <imgui.h>
+#include <CustomClasses/Camera.h>
 
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
 
-DynamicSoundtrackDemoAppApp::DynamicSoundtrackDemoAppApp() {
+DynamicSoundtrackDemoAppApp::DynamicSoundtrackDemoAppApp() : m_Camera(nullptr) {
 	
 }
 
 DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
 
+	m_Camera = nullptr;
+
 }
 
 bool DynamicSoundtrackDemoAppApp::startup() {
 	
+	//Grab a handle to the audio manager and initialize it
 	m_AudioManager = DSS::AudioManager::Instance();
 	m_AudioManager->Init(32);
 
+	//Add Audio and play it
 	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
 	m_AudioManager->ToggleChannelPause(0);
+
+	//Create Camera and set it's transforms
+	m_Camera = new Camera(this);
+	m_Camera->SetPosition(glm::vec3(1.0f));
+	m_Camera->LookAt(glm::vec3(0.0f));
 
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
@@ -43,11 +53,21 @@ void DynamicSoundtrackDemoAppApp::shutdown() {
 
 	Gizmos::destroy();
 
+	//Shutdown the audio manager
 	m_AudioManager->Shutdown();
+
+	//Destroy camera
+	if(m_Camera != nullptr)		delete m_Camera;
 
 }
 
 void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
+
+	//Update the audio manager
+	m_AudioManager->Update(deltaTime);
+
+	//Update the camera
+	m_Camera->Update(deltaTime);
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -69,7 +89,7 @@ void DynamicSoundtrackDemoAppApp::draw() {
 	// update perspective based on screen size
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+	Gizmos::draw(m_projectionMatrix * m_Camera->GetView());
 }
 
 void DynamicSoundtrackDemoAppApp::DrawGrid() {
