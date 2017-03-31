@@ -3,7 +3,7 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <AudioManger.hpp>
+#include <AudioManager.hpp>
 #include <imgui.h>
 
 using glm::vec3;
