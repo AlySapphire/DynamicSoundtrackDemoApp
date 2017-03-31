@@ -10,7 +10,7 @@ using glm::mat4;
 using aie::Gizmos;
 
 DynamicSoundtrackDemoAppApp::DynamicSoundtrackDemoAppApp() {
-
+	
 }
 
 DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
