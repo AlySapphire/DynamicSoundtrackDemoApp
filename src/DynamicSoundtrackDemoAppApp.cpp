@@ -29,8 +29,9 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 	m_AudioManager->Init(32);
 
 	//Add Audio and play it
-	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
+	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true, 2);
 	m_AudioManager->ToggleChannelPause(0);
+	m_AudioManager->SetChannelLoopPoints(0, 3000, 6000, DSS::eTIME_MS);
 
 	//Create Camera and set it's transforms
 	m_Camera = new Camera(this);
