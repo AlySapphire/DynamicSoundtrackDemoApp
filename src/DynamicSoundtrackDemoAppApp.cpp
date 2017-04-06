@@ -30,7 +30,7 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 
 	//Add Audio and play it
 	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true, 2);
-	m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
+	//m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
 	m_AudioManager->ToggleChannelPause(0);
 
 	//Create Camera and set it's transforms
@@ -73,6 +73,12 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	ImGui::Begin("Channel Control");
 	if(ImGui::Button("Toggle Pause"))
 		m_AudioManager->ToggleChannelPause(0);
+	if(ImGui::Button("Create HighPass Effect"))
+		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_HIGHPASS);
+	if(ImGui::Button("Create LowPass Effect"))
+		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_LOWPASS);
+	if(ImGui::Button("Create Echo Effect"))
+		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_ECHO);
 	ImGui::End();
 
 	// quit if we press escape
