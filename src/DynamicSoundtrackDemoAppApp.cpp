@@ -29,8 +29,7 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 	m_AudioManager->Init(32);
 
 	//Add Audio and play it
-	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true, 2);
-	//m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
+	m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
 	m_AudioManager->ToggleChannelPause(0);
 
 	//Create Camera and set it's transforms
@@ -70,7 +69,10 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	//Update the camera
 	m_Camera->Update(deltaTime);
 
+	unsigned int ms = m_AudioManager->GetChannelPlaybackPosition(0);
+
 	ImGui::Begin("Channel Control");
+	ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
 	if(ImGui::Button("Toggle Pause"))
 		m_AudioManager->ToggleChannelPause(0);
 	if(ImGui::Button("Create HighPass Effect"))
@@ -79,6 +81,8 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_LOWPASS);
 	if(ImGui::Button("Create Echo Effect"))
 		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_ECHO);
+	if(ImGui::Button("Create Flange Effect"))
+		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_FLANGE);
 	ImGui::End();
 
 	// quit if we press escape

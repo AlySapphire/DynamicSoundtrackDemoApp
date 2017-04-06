@@ -3,7 +3,7 @@
 int main() {
 	
 	auto app = new DynamicSoundtrackDemoAppApp();
-	app->run("AIE", 1280, 720, false);
+	app->run("Dynamic Soundtrack Demo App", 1280, 720, false);
 	delete app;
 
 	return 0;
