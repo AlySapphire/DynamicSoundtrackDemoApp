@@ -6,6 +6,7 @@
 #include <AudioManager.hpp>
 #include <imgui.h>
 #include <CustomClasses/Camera.h>
+#include <ChannelManager.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -29,8 +30,10 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 	m_AudioManager->Init(32);
 
 	//Add Audio and play it
-	m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
-	m_AudioManager->ToggleChannelPause(0);
+	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
+	m_AudioManager->channelManager->ToggleChannelPause(0);
+	//m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
+	//m_AudioManager->ToggleChannelPause(0);
 
 	//Create Camera and set it's transforms
 	m_Camera = new Camera(this);
@@ -69,12 +72,12 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	//Update the camera
 	m_Camera->Update(deltaTime);
 
-	unsigned int ms = m_AudioManager->GetChannelPlaybackPosition(0);
+	unsigned int ms = m_AudioManager->channelManager->GetChannelPlaybackPosition(0);
 
 	ImGui::Begin("Channel Control");
 	ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
 	if(ImGui::Button("Toggle Pause"))
-		m_AudioManager->ToggleChannelPause(0);
+		m_AudioManager->channelManager->ToggleChannelPause(0);
 	if(ImGui::Button("Create HighPass Effect"))
 		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_HIGHPASS);
 	if(ImGui::Button("Create LowPass Effect"))
