@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <CustomClasses/Camera.h>
 #include <ChannelManager.hpp>
+#include <ChannelGroupManager.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -24,16 +25,28 @@ DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
 }
 
 bool DynamicSoundtrackDemoAppApp::startup() {
+
+	DSS::ChannelGroupManager* cgm = DSS::ChannelGroupManager::Instance();
 	
 	//Grab a handle to the audio manager and initialize it
 	m_AudioManager = DSS::AudioManager::Instance();
 	m_AudioManager->Init(32);
 
-	//Add Audio and play it
-	m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
-	m_AudioManager->channelManager->ToggleChannelPause(0);
+	//Add Audio
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-VOCALS.wav", true);
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-LEADS.wav", true);
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-KEYS.wav", true);
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-DRUMS.wav", true);
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-BASS.wav", true);
+	m_AudioManager->AddAudio("audio/WANO_Stems/WANO-FULL-SFX.wav", true);
+	//m_AudioManager->AddAudio("audio/Prodigy Babe.wav", true);
+	//m_AudioManager->channelManager->ToggleChannelPause(0);
 	//m_AudioManager->SetChannelLoopPoints(0, 3500, 6500, DSS::eTIME_MS);
 	//m_AudioManager->ToggleChannelPause(0);
+
+	//Add Channels to ChannelGroup
+	unsigned int wanoChannels[] = { 0, 1, 2, 3, 4, 5 };
+	cgm->CreateChannelGroup("WANO", wanoChannels, 6);
 
 	//Create Camera and set it's transforms
 	m_Camera = new Camera(this);
@@ -74,18 +87,28 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 
 	unsigned int ms = m_AudioManager->channelManager->GetChannelPlaybackPosition(0);
 
-	ImGui::Begin("Channel Control");
+	DSS::ChannelGroupManager* cgm = DSS::ChannelGroupManager::Instance();
+
+	//ImGui::Begin("Channel Control");
+	//ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
+	//if(ImGui::Button("Toggle Pause"))
+	//	m_AudioManager->channelManager->ToggleChannelPause(0);
+	//if(ImGui::Button("Create HighPass Effect"))
+	//	m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_HIGHPASS);
+	//if(ImGui::Button("Create LowPass Effect"))
+	//	m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_LOWPASS);
+	//if(ImGui::Button("Create Echo Effect"))
+	//	m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_ECHO);
+	//if(ImGui::Button("Create Flange Effect"))
+	//	m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_FLANGE);
+	//ImGui::End();
+
+	ImGui::Begin("ChannelGroup Control");
 	ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
-	if(ImGui::Button("Toggle Pause"))
-		m_AudioManager->channelManager->ToggleChannelPause(0);
-	if(ImGui::Button("Create HighPass Effect"))
-		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_HIGHPASS);
-	if(ImGui::Button("Create LowPass Effect"))
-		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_LOWPASS);
-	if(ImGui::Button("Create Echo Effect"))
-		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_ECHO);
-	if(ImGui::Button("Create Flange Effect"))
-		m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_FLANGE);
+	if(ImGui::Button("Play ChannelGroup"))
+		cgm->PlayChannelGroup("WANO");
+	if(ImGui::Button("Pause ChannelGroup"))
+		cgm->PauseChannelGroup("WANO");
 	ImGui::End();
 
 	// quit if we press escape
