@@ -110,6 +110,7 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	//ImGui::End();
 
 	float volume = 0.0f;
+	float pitch = 0.0f;
 
 	ImGui::Begin("ChannelGroup Control");
 	ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
@@ -119,11 +120,14 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 		cgm->PauseChannelGroup("WANO");
 	for(auto iter = 0; iter < 6; iter++) {
 		volume = wanoMixer->GetVolume(iter);
+		pitch = wanoMixer->GetPitch(iter);
 		if(ImGui::TreeNode(TrackNames[iter].c_str())) {
 			if(ImGui::Button("Toggle Mute"))
 				wanoMixer->ToggleChannelMute(iter);
 			if(ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f))
 				wanoMixer->SetVolume(iter, volume);
+			if(ImGui::SliderFloat("Pitch", &pitch, 0.0f, 2.0f))
+				wanoMixer->SetPitch(iter, pitch);
 			ImGui::TreePop();
 		}
 	}
