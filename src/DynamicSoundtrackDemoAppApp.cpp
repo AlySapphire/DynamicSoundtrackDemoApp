@@ -8,6 +8,8 @@
 #include <CustomClasses/Camera.h>
 #include <ChannelManager.hpp>
 #include <ChannelGroupManager.hpp>
+#include <Submixer.hpp>
+#include <string>
 
 using glm::vec3;
 using glm::vec4;
@@ -89,6 +91,10 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 
 	DSS::ChannelGroupManager* cgm = DSS::ChannelGroupManager::Instance();
 
+	DSS::Submixer* wanoMixer = cgm->GetSubmixer("WANO");
+
+	std::string TrackNames[] = { "Vocals", "Leads", "Keys", "Drums", "Bass", "SFX" };
+
 	//ImGui::Begin("Channel Control");
 	//ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
 	//if(ImGui::Button("Toggle Pause"))
@@ -103,12 +109,24 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	//	m_AudioManager->CreateTimedEvent(4000, DSS::eEVENT_FLANGE);
 	//ImGui::End();
 
+	float volume = 0.0f;
+
 	ImGui::Begin("ChannelGroup Control");
 	ImGui::Text("Time: %02d:%02d:%02d", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100);
 	if(ImGui::Button("Play ChannelGroup"))
 		cgm->PlayChannelGroup("WANO");
 	if(ImGui::Button("Pause ChannelGroup"))
 		cgm->PauseChannelGroup("WANO");
+	for(auto iter = 0; iter < 6; iter++) {
+		volume = wanoMixer->GetVolume(iter);
+		if(ImGui::TreeNode(TrackNames[iter].c_str())) {
+			if(ImGui::Button("Toggle Mute"))
+				wanoMixer->ToggleChannelMute(iter);
+			if(ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f))
+				wanoMixer->SetVolume(iter, volume);
+			ImGui::TreePop();
+		}
+	}
 	ImGui::End();
 
 	// quit if we press escape
