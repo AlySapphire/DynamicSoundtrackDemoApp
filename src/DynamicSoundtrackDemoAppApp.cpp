@@ -50,6 +50,9 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 	unsigned int wanoChannels[] = { 0, 1, 2, 3, 4, 5 };
 	cgm->CreateChannelGroup("WANO", wanoChannels, 6);
 
+	//Populate our Event data
+	PopulateEventData();
+
 	//Create Camera and set it's transforms
 	m_Camera = new Camera(this);
 	m_Camera->SetPosition(glm::vec3(1.0f));
@@ -118,6 +121,8 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 		cgm->PlayChannelGroup("WANO");
 	if(ImGui::Button("Pause ChannelGroup"))
 		cgm->PauseChannelGroup("WANO");
+	if(ImGui::Button("Run Test Event"))
+		m_AudioManager->ActivateEvents(*&m_Events);
 	for(auto iter = 0; iter < 6; iter++) {
 		volume = wanoMixer->GetVolume(iter);
 		pitch = wanoMixer->GetPitch(iter);
@@ -126,8 +131,8 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 				wanoMixer->ToggleChannelMute(iter);
 			if(ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f))
 				wanoMixer->SetVolume(iter, volume);
-			if(ImGui::SliderFloat("Pitch", &pitch, 0.0f, 2.0f))
-				wanoMixer->SetPitch(iter, pitch);
+			//if(ImGui::SliderFloat("Pitch", &pitch, 0.0f, 2.0f))
+			//	wanoMixer->SetPitch(iter, pitch);
 			ImGui::TreePop();
 		}
 	}
@@ -172,5 +177,49 @@ void DynamicSoundtrackDemoAppApp::DrawGrid() {
 
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
+
+}
+
+void DynamicSoundtrackDemoAppApp::PopulateEventData() {
+
+	//Create a test event
+	DSS::EventData testEvent;
+	
+	//Populate it with data
+	//Use "WANO" channelgroup
+	testEvent.channelGroup = true;
+	testEvent.channelGroupName = "WANO";
+	//Don't use the whole channel group but use an individual channel
+	testEvent.channelGroupOverall = false;
+	testEvent.channelNumber = 0;
+	//Add a DSP filter
+	testEvent.DSPType = DSS::eDSP_LOWPASS;
+	//Reset the values after use
+	testEvent.resetValues = true;
+	//Make Event last for 5 seconds/5000 milliseconds
+	testEvent.duration = 5000;
+
+	//Add our testEvent to our array
+	m_Events.push_back(testEvent);
+
+	//Create a test event
+	DSS::EventData testEvent1;
+
+	//Populate it with data
+	//Use "WANO" channelgroup
+	testEvent1.channelGroup = true;
+	testEvent1.channelGroupName = "WANO";
+	//Don't use the whole channel group but use an individual channel
+	testEvent1.channelGroupOverall = false;
+	testEvent1.channelNumber = 1;
+	//Add a DSP filter
+	testEvent1.DSPType = DSS::eDSP_HIGHPASS;
+	//Reset the values after use
+	testEvent1.resetValues = true;
+	//Make Event last for 6 seconds/6000 milliseconds
+	testEvent1.duration = 6000;
+
+	//Add to array
+	m_Events.push_back(testEvent1);
 
 }

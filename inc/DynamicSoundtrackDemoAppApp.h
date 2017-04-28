@@ -2,9 +2,11 @@
 
 #include "Application.h"
 #include <glm/mat4x4.hpp>
+#include <vector>
 
 namespace DSS {
 	class AudioManager;
+	struct EventData;
 }
 
 class Camera;
@@ -25,6 +27,8 @@ protected:
 
 	void DrawGrid();
 
+	void PopulateEventData();
+
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
@@ -32,5 +36,7 @@ protected:
 	Camera* m_Camera;
 
 	DSS::AudioManager* m_AudioManager;
+
+	std::vector<DSS::EventData> m_Events;
 
 };
