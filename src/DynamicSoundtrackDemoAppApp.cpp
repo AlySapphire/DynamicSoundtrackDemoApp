@@ -122,7 +122,7 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	if(ImGui::Button("Pause ChannelGroup"))
 		cgm->PauseChannelGroup("WANO");
 	if(ImGui::Button("Run Test Event"))
-		m_AudioManager->ActivateEvents(*&m_Events);
+		m_AudioManager->ActivateEvents(m_Events);
 	for(auto iter = 0; iter < 6; iter++) {
 		volume = wanoMixer->GetVolume(iter);
 		pitch = wanoMixer->GetPitch(iter);
@@ -193,7 +193,7 @@ void DynamicSoundtrackDemoAppApp::PopulateEventData() {
 	testEvent.channelGroupOverall = false;
 	testEvent.channelNumber = 0;
 	//Add a DSP filter
-	testEvent.DSPType = DSS::eDSP_LOWPASS;
+	testEvent.DSPType = DSS::eDSP_FLANGE;
 	//Reset the values after use
 	testEvent.resetValues = true;
 	//Make Event last for 5 seconds/5000 milliseconds
