@@ -93,10 +93,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CollisionSphere.cpp" />
     <ClCompile Include="src\DynamicSoundtrackDemoAppApp.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\CollisionSphere.hpp" />
     <ClInclude Include="inc\DynamicSoundtrackDemoAppApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
