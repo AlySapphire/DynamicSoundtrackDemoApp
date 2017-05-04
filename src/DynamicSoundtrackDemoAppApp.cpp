@@ -277,7 +277,7 @@ void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 	DSS::DSP_Parameter pitchParams;
 	pitchParams.dataType = DSS::eDSP_PARAMETER_VALUE_TYPE_FLOAT;
 	pitchParams.parameterIndex = 0;
-	pitchParams.value.floatTypeArgument = 2.0f;
+	pitchParams.value.floatTypeArgument = 0.5f;
 	event4.back().DSP_Parameters.push_back(pitchParams);
 	event4.push_back(CreateEvent(6000, true, false, false, 0, 0, false, 0, true, "WANO", false, 4, true));
 	event4.push_back(CreateEvent(6000, false, false, true, 1.0f, 0.25f, false, 0, true, "WANO", false, 3, true));
@@ -290,7 +290,11 @@ void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 
 	event5.push_back(CreateEvent(10000, false, false, false, 0, 0, false, 0, true, "WANO", true, 1, true));
 	event5.back().DSPType = DSS::eDSP_PITCH;
-	event5.back().DSP_Parameters.push_back(pitchParams);
+	DSS::DSP_Parameter pitchParams1;
+	pitchParams1.dataType = DSS::eDSP_PARAMETER_VALUE_TYPE_FLOAT;
+	pitchParams1.parameterIndex = 0;
+	pitchParams1.value.floatTypeArgument = 2.0f;
+	event5.back().DSP_Parameters.push_back(pitchParams1);
 
 	std::vector<DSS::EventData> events[] = { event1, event2, event3, event4, event5 };
 
