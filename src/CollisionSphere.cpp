@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <AudioManager.hpp>
+#include <iostream>
 
 CollisionSphere::CollisionSphere(glm::vec3 p_Centre, float p_Radius) : m_Centre(p_Centre), m_Radius(p_Radius) {
 
@@ -28,9 +29,13 @@ void CollisionSphere::CheckForCollisions(CollisionSphere & p_Other) {
 		if(!m_Colliding) {
 			DSS::AudioManager::Instance()->ActivateEvents(m_Events);
 			m_Colliding = true;
+			std::cout << "Collided!" << std::endl;
 		}
 	} else {
-		m_Colliding = false;
+		if(m_Colliding) {
+			m_Colliding = false;
+			std::cout << "Left collision area!" << std::endl;
+		}
 	}
 
 }

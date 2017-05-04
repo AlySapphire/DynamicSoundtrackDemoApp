@@ -10,19 +10,21 @@
 #include <ChannelGroupManager.hpp>
 #include <Submixer.hpp>
 #include <string>
+#include "CollisionSphere.hpp"
 
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
 
-DynamicSoundtrackDemoAppApp::DynamicSoundtrackDemoAppApp() : m_Camera(nullptr) {
+DynamicSoundtrackDemoAppApp::DynamicSoundtrackDemoAppApp() : m_Camera(nullptr), m_CameraCollider(nullptr) {
 	
 }
 
 DynamicSoundtrackDemoAppApp::~DynamicSoundtrackDemoAppApp() {
 
 	m_Camera = nullptr;
+	m_CameraCollider = nullptr;
 
 }
 
@@ -55,8 +57,12 @@ bool DynamicSoundtrackDemoAppApp::startup() {
 
 	//Create Camera and set it's transforms
 	m_Camera = new Camera(this);
-	m_Camera->SetPosition(glm::vec3(1.0f));
+	m_Camera->SetPosition(glm::vec3(10, 5, 0));
 	m_Camera->LookAt(glm::vec3(0.0f));
+
+	m_CameraCollider = new CollisionSphere(m_Camera->GetPosition(), 0.1f);
+
+	SetupCollisionSpheres();
 
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
@@ -78,7 +84,10 @@ void DynamicSoundtrackDemoAppApp::shutdown() {
 	m_AudioManager->Shutdown();
 
 	//Destroy camera
-	if(m_Camera != nullptr)		delete m_Camera;
+	if(m_Camera != nullptr)				delete m_Camera;
+	//Destroy Colliders
+	if(m_CameraCollider != nullptr)		delete m_CameraCollider;
+	m_EventSpheres.clear();
 
 }
 
@@ -89,6 +98,14 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 
 	//Update the camera
 	m_Camera->Update(deltaTime);
+
+	//Update Camera Collider
+	m_CameraCollider->SetCentre(m_Camera->GetPosition());
+
+	//Check collisions
+	for(auto iter = 0; iter < 4; iter++) {
+		m_EventSpheres[iter].CheckForCollisions(*m_CameraCollider);
+	}
 
 	unsigned int ms = m_AudioManager->channelManager->GetChannelPlaybackPosition(0);
 
@@ -227,4 +244,76 @@ void DynamicSoundtrackDemoAppApp::PopulateEventData() {
 	//Add to array
 	m_Events.push_back(testEvent1);
 
+}
+
+void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
+
+	//Setup 4 spheres with their own radiuses, centre's and event data
+	glm::vec3 centres[] = { glm::vec3(5), glm::vec3(5, 5, -5), glm::vec3(-5, 5, 5), glm::vec3(-5, 5, -5) };
+
+	std::vector<DSS::EventData> event1;
+
+	event1.push_back(CreateEvent(5000, true, false, false, 0.0f, 0.0f, false, 0.0f, true, "WANO", false, 1, true));
+	event1.push_back(CreateEvent(5500, false, false, false, 0.0f, 0.0f, false, 0.0f, true, "WANO", false, 0, true));
+	event1.back().DSPType = DSS::eDSP_LOWPASS;
+	event1.push_back(CreateEvent(4000, false, false, true, 1.0f, 5.0f, false, 0.0f, true, "WANO", false, 2, true));
+	event1.push_back(CreateEvent(6000, false, false, false, 0.0f, 0.0f, true, 0.5f, true, "WANO", false, 3, true));
+	event1.back().origVolume = 1.0f;
+
+	std::vector<DSS::EventData> event2;
+
+	event2.push_back(CreateEvent(6000, false, false, false, 0.0f, 0.0f, false, 0.0f, true, "WANO", true, 0, true));
+	event2.back().DSPType = DSS::eDSP_ECHO;
+
+
+	std::vector<DSS::EventData> event3;
+
+	event3.push_back(CreateEvent(5000, false, false, true, 1.0f, 0.0f, false, 0.0f, true, "WANO", true, 0, true));
+
+	std::vector<DSS::EventData> event4;
+
+	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 0, true));
+	event4.back().DSPType = DSS::eDSP_LOWPASS;
+	event4.push_back(CreateEvent(6000, true, false, false, 0, 0, false, 0, true, "WANO", false, 4, true));
+	event4.push_back(CreateEvent(6000, false, false, true, 1.0f, 0.25f, false, 0, true, "WANO", false, 3, true));
+	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 2, true));
+	event4.back().DSPType = DSS::eDSP_FLANGE;
+	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 1, true));
+	event4.back().DSPType = DSS::eDSP_HIGHPASS;
+
+	std::vector<DSS::EventData> events[] = { event1, event2, event3, event4 };
+
+	for(auto iter = 0; iter < 4; iter++) {
+
+		CollisionSphere sphere(centres[iter], 2.0f);
+		sphere.SetEventData(events[iter]);
+		m_EventSpheres.push_back(sphere);
+
+	}
+
+}
+
+DSS::EventData DynamicSoundtrackDemoAppApp::CreateEvent(unsigned int p_Duration, bool p_Mute, bool p_Pause, bool p_Fade, float fadeLevelStart, 
+														float fadeLevelEnd, bool p_Volume, float p_VolumeLevel, bool p_ChannelGroup, 
+														const char * p_ChannelGroupName, bool p_ChannelGroupOverall, int p_ChannelNumber, 
+														bool p_ResetValues) {
+	
+	DSS::EventData temp;
+
+	//Store values passed in
+	temp.duration = p_Duration;
+	temp.mute = p_Mute;
+	temp.pause = p_Pause;
+	temp.fade = p_Fade; 
+	temp.fadeLevelStart = fadeLevelStart;
+	temp.fadeLevelEnd = fadeLevelEnd;
+	temp.volume = p_Volume;
+	temp.volumeLevel = p_VolumeLevel;
+	temp.channelGroup = p_ChannelGroup;
+	temp.channelGroupName = p_ChannelGroupName;
+	temp.channelGroupOverall = p_ChannelGroupOverall;
+	temp.channelNumber = p_ChannelNumber;
+	temp.resetValues = p_ResetValues;
+	
+	return temp;
 }
