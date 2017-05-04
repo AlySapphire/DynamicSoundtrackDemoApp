@@ -103,8 +103,9 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 	m_CameraCollider->SetCentre(m_Camera->GetPosition());
 
 	//Check collisions
-	for(auto iter = 0; iter < 4; iter++) {
-		m_EventSpheres[iter].CheckForCollisions(*m_CameraCollider);
+	for(unsigned int i = 0; i < m_EventSpheres.size(); i++) {
+		m_EventSpheres[i].CheckForCollisions(*m_CameraCollider);
+		//iter.CheckForCollisions(*m_CameraCollider);
 	}
 
 	unsigned int ms = m_AudioManager->channelManager->GetChannelPlaybackPosition(0);
@@ -148,8 +149,6 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 				wanoMixer->ToggleChannelMute(iter);
 			if(ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f))
 				wanoMixer->SetVolume(iter, volume);
-			//if(ImGui::SliderFloat("Pitch", &pitch, 0.0f, 2.0f))
-			//	wanoMixer->SetPitch(iter, pitch);
 			ImGui::TreePop();
 		}
 	}
@@ -176,6 +175,7 @@ void DynamicSoundtrackDemoAppApp::draw() {
 	Gizmos::addSphere(glm::vec3(5, 5, -5), 2.0f, 20, 20, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	Gizmos::addSphere(glm::vec3(-5, 5, 5), 2.0f, 20, 20, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	Gizmos::addSphere(glm::vec3(-5, 5, -5), 2.0f, 20, 20, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	Gizmos::addSphere(glm::vec3(0, 5, 0), 2.0f, 20, 20, glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 
 	// update perspective based on screen size
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
@@ -249,7 +249,7 @@ void DynamicSoundtrackDemoAppApp::PopulateEventData() {
 void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 
 	//Setup 4 spheres with their own radiuses, centre's and event data
-	glm::vec3 centres[] = { glm::vec3(5), glm::vec3(5, 5, -5), glm::vec3(-5, 5, 5), glm::vec3(-5, 5, -5) };
+	glm::vec3 centres[] = { glm::vec3(5), glm::vec3(5, 5, -5), glm::vec3(-5, 5, 5), glm::vec3(-5, 5, -5), glm::vec3(0, 5, 0) };
 
 	std::vector<DSS::EventData> event1;
 
@@ -286,9 +286,15 @@ void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 1, true));
 	event4.back().DSPType = DSS::eDSP_HIGHPASS;
 
-	std::vector<DSS::EventData> events[] = { event1, event2, event3, event4 };
+	std::vector<DSS::EventData> event5;
 
-	for(auto iter = 0; iter < 4; iter++) {
+	event5.push_back(CreateEvent(10000, false, false, false, 0, 0, false, 0, true, "WANO", true, 1, true));
+	event5.back().DSPType = DSS::eDSP_PITCH;
+	event5.back().DSP_Parameters.push_back(pitchParams);
+
+	std::vector<DSS::EventData> events[] = { event1, event2, event3, event4, event5 };
+
+	for(auto iter = 0; iter < 5; iter++) {
 
 		CollisionSphere sphere(centres[iter], 2.0f);
 		sphere.SetEventData(events[iter]);
