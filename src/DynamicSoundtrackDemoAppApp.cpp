@@ -155,6 +155,11 @@ void DynamicSoundtrackDemoAppApp::draw() {
 
 	DrawGrid();
 
+	Gizmos::addSphere(glm::vec3(5), 2.0f, 20, 20, glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
+	Gizmos::addSphere(glm::vec3(5, 5, -5), 2.0f, 20, 20, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	Gizmos::addSphere(glm::vec3(-5, 5, 5), 2.0f, 20, 20, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	Gizmos::addSphere(glm::vec3(-5, 5, -5), 2.0f, 20, 20, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+
 	// update perspective based on screen size
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
