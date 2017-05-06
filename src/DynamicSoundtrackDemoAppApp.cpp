@@ -104,6 +104,7 @@ void DynamicSoundtrackDemoAppApp::update(float deltaTime) {
 
 	//Check collisions
 	for(unsigned int i = 0; i < m_EventSpheres.size(); i++) {
+		m_EventSpheres[i].Update(deltaTime);
 		m_EventSpheres[i].CheckForCollisions(*m_CameraCollider);
 		//iter.CheckForCollisions(*m_CameraCollider);
 	}

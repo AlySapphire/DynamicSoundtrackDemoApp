@@ -4,12 +4,49 @@
 #include <glm/ext.hpp>
 #include <AudioManager.hpp>
 #include <iostream>
+#include <imgui.h>
+#include <algorithm>
+#include <glm/glm.hpp>
+
+typedef unsigned int uint;
+
+bool sortEvents(DSS::EventData a, DSS::EventData b) {
+	return (a.duration > b.duration);
+}
 
 CollisionSphere::CollisionSphere(glm::vec3 p_Centre, float p_Radius) : m_Centre(p_Centre), m_Radius(p_Radius) {
 
 }
 
 CollisionSphere::~CollisionSphere() {
+
+}
+
+void CollisionSphere::Update(float deltaTime) {
+
+	m_Time += deltaTime;
+
+	if(m_ShowEvents) {
+		ImGui::OpenPopup("Event Durations");
+		ImGui::BeginPopupModal("Event Durations");
+		for(uint i = 0; i < m_Events.size(); i++) {
+			if(i == 0 && m_Time >= (float)(m_Events[i].duration / 1000)) {
+				m_ShowEvents = false;
+				ImGui::CloseCurrentPopup();
+				break;
+			}
+
+			float timeRemaining = (float)(m_Events[i].duration / 1000) - m_Time;
+			if(timeRemaining <= 0.0f)	break;
+			float progress = ( timeRemaining / ((float)(m_Events[i].duration) / 1000));
+
+			ImGui::Text("Event %u duration", i);
+			ImGui::ProgressBar(progress);
+
+		}
+		ImGui::EndPopup();
+
+	}
 
 }
 
@@ -30,6 +67,8 @@ void CollisionSphere::CheckForCollisions(CollisionSphere & p_Other) {
 			DSS::AudioManager::Instance()->ActivateEvents(m_Events);
 			m_Colliding = true;
 			std::cout << "Collided!" << std::endl;
+			m_ShowEvents = true;
+			m_Time = 0.0f;
 		}
 	} else {
 		if(m_Colliding) {
@@ -37,6 +76,7 @@ void CollisionSphere::CheckForCollisions(CollisionSphere & p_Other) {
 			std::cout << "Left collision area!" << std::endl;
 		}
 	}
+
 
 }
 
@@ -59,6 +99,8 @@ void CollisionSphere::SetRadius(float p_Radius) {
 void CollisionSphere::SetEventData(std::vector<DSS::EventData>& p_Events) {
 
 	m_Events = p_Events;
+
+	std::stable_sort(m_Events.begin(), m_Events.end(), sortEvents);
 
 }
 
