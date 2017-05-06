@@ -16,6 +16,8 @@ public:
 
 	void CheckForCollisions(CollisionSphere & p_Other);
 
+	unsigned int sphereID;
+
 	const glm::vec3& GetCentre();
 	float GetRadius();
 

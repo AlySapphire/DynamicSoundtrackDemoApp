@@ -303,6 +303,7 @@ void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 
 		CollisionSphere sphere(centres[iter], 2.0f);
 		sphere.SetEventData(events[iter]);
+		sphere.sphereID = iter;
 		m_EventSpheres.push_back(sphere);
 
 	}

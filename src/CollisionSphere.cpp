@@ -27,12 +27,12 @@ void CollisionSphere::Update(float deltaTime) {
 	m_Time += deltaTime;
 
 	if(m_ShowEvents) {
-		ImGui::OpenPopup("Event Durations");
-		ImGui::BeginPopupModal("Event Durations");
+		char name[100];
+		sprintf(name, "Sphere %u Events", sphereID);
+		ImGui::Begin(name);
 		for(uint i = 0; i < m_Events.size(); i++) {
 			if(i == 0 && m_Time >= (float)(m_Events[i].duration / 1000)) {
 				m_ShowEvents = false;
-				ImGui::CloseCurrentPopup();
 				break;
 			}
 
@@ -44,7 +44,7 @@ void CollisionSphere::Update(float deltaTime) {
 			ImGui::ProgressBar(progress);
 
 		}
-		ImGui::EndPopup();
+		ImGui::End();
 
 	}
 
