@@ -280,11 +280,11 @@ void DynamicSoundtrackDemoAppApp::SetupCollisionSpheres() {
 	pitchParams.parameterIndex = 0;
 	pitchParams.value.floatTypeArgument = 0.5f;
 	event4.back().DSP_Parameters.push_back(pitchParams);
-	event4.push_back(CreateEvent(6000, true, false, false, 0, 0, false, 0, true, "WANO", false, 4, true));
-	event4.push_back(CreateEvent(6000, false, false, true, 1.0f, 0.25f, false, 0, true, "WANO", false, 3, true));
-	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 2, true));
+	event4.push_back(CreateEvent(7000, true, false, false, 0, 0, false, 0, true, "WANO", false, 4, true));
+	event4.push_back(CreateEvent(8000, false, false, true, 1.0f, 0.25f, false, 0, true, "WANO", false, 3, true));
+	event4.push_back(CreateEvent(9000, false, false, false, 0, 0, false, 0, true, "WANO", false, 2, true));
 	event4.back().DSPType = DSS::eDSP_FLANGE;
-	event4.push_back(CreateEvent(6000, false, false, false, 0, 0, false, 0, true, "WANO", false, 1, true));
+	event4.push_back(CreateEvent(5000, false, false, false, 0, 0, false, 0, true, "WANO", false, 1, true));
 	event4.back().DSPType = DSS::eDSP_HIGHPASS;
 
 	std::vector<DSS::EventData> event5;
